@@ -21,13 +21,12 @@ public class UserFunctions implements Serializable {
     private static User actualUser;
     private static int confirmation;
 
-    public UserFunctions() {
-        User master = new User("master", toHexString(encodedPwd("1234")), "pmejiaskudelka@gmail.com", null);
-        users.put("master", master);
-    }
-
     public void setActualUser(User actualUser){
         this.actualUser = actualUser;
+    }
+
+    public static Map<String, User> getUsers(){
+        return users;
     }
 
     public static String toHexString(byte[] hash) {

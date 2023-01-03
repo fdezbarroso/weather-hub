@@ -22,7 +22,6 @@ import user.exceptions.UnregisteredUserException;
 
 public class MainActivity extends AppCompatActivity {
 
-    UserFunctions userFunctions;
     SharedPreferences settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+
+        //Usuario maestro
+        User master = new User("master", UserFunctions.toHexString(UserFunctions.encodedPwd("1234")), "pmejiaskudelka@gmail.com", null);
+        UserFunctions.getUsers().put("master", master);
+
         //Envía a la pestaña de registro e inicia la actividad register
         settings = getSharedPreferences("my_prefs", MODE_PRIVATE);
         boolean isChecked = settings.getBoolean("logged", false);
@@ -66,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = settings.edit();
                     if(isChecked)
                         editor.putBoolean("logged", true);
-
                     else
                         editor.putBoolean("logged", false);
                     editor.apply();

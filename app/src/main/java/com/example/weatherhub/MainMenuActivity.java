@@ -27,9 +27,11 @@ public class MainMenuActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserFunctions.logout();
-                Intent login = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(login);
+                SharedPreferences settings = getSharedPreferences("my_prefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean("logged", false);
+                editor.apply();
+                finish();
             }
         });
     }

@@ -47,9 +47,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="128dp"
-        android:layout_height="47dp"
-        android:fontFamily="@font/allan_bold"
+        android:layout_width="151dp"
+        android:layout_height="50dp"
+        android:fontFamily="sans-serif"
         android:text="Registro"
         android:textColor="#364495"
         android:textSize="36sp"
@@ -57,10 +57,10 @@
         android:typeface="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintHorizontal_bias="0.546"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.135" />
+        app:layout_constraintVertical_bias="0.13" />
 
     <TextView
         android:id="@+id/textView6"
