@@ -26,20 +26,20 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="175dp"
-        android:layout_height="74dp"
-        android:background="@drawable/box"
+        android:layout_width="267dp"
+        android:layout_height="89dp"
+        android:background="@drawable/box1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.117" />
+        app:layout_constraintVertical_bias="0.121" />
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="278dp"
-        android:layout_height="349dp"
-        android:background="@drawable/box"
+        android:layout_width="267dp"
+        android:layout_height="344dp"
+        android:background="@drawable/box1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -48,20 +48,18 @@
 
     <TextView
         android:id="@+id/textView12"
-        android:layout_width="151dp"
-        android:layout_height="45dp"
-        android:fontFamily="sans-serif"
+        android:layout_width="175dp"
+        android:layout_height="52dp"
+        android:fontFamily="@font/roboto_mono_light"
         android:text="Registro"
-        android:textColor="#364495"
+        android:textColor="#000000"
         android:textSize="36sp"
-        android:textStyle="bold"
         android:typeface="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.546"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.134" />
+        app:layout_constraintVertical_bias="0.142" />
 
     <TextView
         android:id="@+id/textView3"

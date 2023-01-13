@@ -26,9 +26,9 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="175dp"
-        android:layout_height="74dp"
-        android:background="@drawable/box"
+        android:layout_width="267dp"
+        android:layout_height="89dp"
+        android:background="@drawable/box1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
         android:id="@+id/textView2"
         android:layout_width="267dp"
         android:layout_height="279dp"
-        android:background="@drawable/box"
+        android:background="@drawable/box1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,12 +47,12 @@
 
     <TextView
         android:id="@+id/textView11"
-        android:layout_width="167dp"
-        android:layout_height="55dp"
-        android:fontFamily="sans-serif"
+        android:layout_width="181dp"
+        android:layout_height="64dp"
+        android:fontFamily="@font/roboto_mono_light"
         android:text="Recuperar Contraseña"
         android:textAlignment="center"
-        android:textColor="#364495"
+        android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
         android:typeface="normal"
