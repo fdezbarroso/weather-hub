@@ -69,10 +69,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Save a flag in shared preferences indicating that the user wants to stay logged in
                 SharedPreferences.Editor editor = settings.edit();
-                if (isChecked)
-                    editor.putBoolean("logged", true);
-                else
-                    editor.putBoolean("logged", false);
+                editor.putBoolean("logged", isChecked);
                 editor.apply();
             }
         });
@@ -88,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent log = new Intent(getApplicationContext(), MainMenuActivity.class);
                     startActivity(log);
                 } catch (UnregisteredUserException e) {
-                    Toast.makeText(getApplicationContext(), "Usuario no registradp", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
                 } catch (IncorrectPwdException e) {
                     Toast.makeText(getApplicationContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
                 }

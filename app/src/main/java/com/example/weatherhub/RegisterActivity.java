@@ -52,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
                     User user = UserFunctions.newUser(username.getText().toString().trim(), pwd.getText().toString().trim()
                             , pwd2.getText().toString().trim()
                             , email.getText().toString().trim());
-                    ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
+                    ProgressDialog.show(context, "", "Enviando correo...", true);
                     Intent confirm = new Intent(getApplicationContext(), ConfirmActivity.class);
                     confirm.putExtra("user", user);
                     startActivity(confirm);

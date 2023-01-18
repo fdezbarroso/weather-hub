@@ -45,7 +45,7 @@ public class UserForPwdRecoveryActivity extends AppCompatActivity {
                     EditText userField = findViewById(R.id.editTextPersonName);
                     String username = userField.getText().toString().trim();
                     UserFunctions.confirmIdentityPwdRecover(username);
-                    ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
+                    ProgressDialog.show(context, "", "Enviando correo...", true);
                     Intent pwdRecover = new Intent(getApplicationContext(), RecoveryPwdActivity.class);
                     pwdRecover.putExtra("user", username);
                     startActivity(pwdRecover);
