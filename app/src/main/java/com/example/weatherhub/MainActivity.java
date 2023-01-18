@@ -23,6 +23,7 @@ import user.exceptions.UnregisteredUserException;
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences settings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,14 +67,14 @@ public class MainActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // Save a flag in shared preferences indicating that the user wants to stay logged in
-                    SharedPreferences.Editor editor = settings.edit();
-                    if(isChecked)
-                        editor.putBoolean("logged", true);
-                    else
-                        editor.putBoolean("logged", false);
-                    editor.apply();
-               }
+                // Save a flag in shared preferences indicating that the user wants to stay logged in
+                SharedPreferences.Editor editor = settings.edit();
+                if (isChecked)
+                    editor.putBoolean("logged", true);
+                else
+                    editor.putBoolean("logged", false);
+                editor.apply();
+            }
         });
         //Realiza el login en la app
         Button login = findViewById(R.id.button);
@@ -81,11 +82,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                EditText username = findViewById(R.id.editTextTextPersonName);
-                EditText pwd = findViewById(R.id.editTextTextPassword);
-                UserFunctions.login(username.getText().toString().trim(), pwd.getText().toString().trim());
-                Intent log = new Intent(getApplicationContext(), MainMenuActivity.class);
-                startActivity(log);
+                    EditText username = findViewById(R.id.editTextTextPersonName);
+                    EditText pwd = findViewById(R.id.editTextTextPassword);
+                    UserFunctions.login(username.getText().toString().trim(), pwd.getText().toString().trim());
+                    Intent log = new Intent(getApplicationContext(), MainMenuActivity.class);
+                    startActivity(log);
                 } catch (UnregisteredUserException e) {
                     Toast.makeText(getApplicationContext(), "Usuario no registradp", Toast.LENGTH_SHORT).show();
                 } catch (IncorrectPwdException e) {

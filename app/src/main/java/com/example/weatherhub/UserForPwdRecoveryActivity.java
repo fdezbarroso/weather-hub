@@ -47,7 +47,7 @@ public class UserForPwdRecoveryActivity extends AppCompatActivity {
                     UserFunctions.confirmIdentityPwdRecover(username);
                     ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
                     Intent pwdRecover = new Intent(getApplicationContext(), RecoveryPwdActivity.class);
-                    pwdRecover.putExtra("user",username);
+                    pwdRecover.putExtra("user", username);
                     startActivity(pwdRecover);
                 } catch (UnregisteredUserException e) {
                     Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();

@@ -54,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
                             , email.getText().toString().trim());
                     ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
                     Intent confirm = new Intent(getApplicationContext(), ConfirmActivity.class);
-                    confirm.putExtra("user",user);
+                    confirm.putExtra("user", user);
                     startActivity(confirm);
                 } catch (UserAlreadyExistException e) {
                     Toast.makeText(getApplicationContext(), "Este usuario ya existe", Toast.LENGTH_SHORT).show();

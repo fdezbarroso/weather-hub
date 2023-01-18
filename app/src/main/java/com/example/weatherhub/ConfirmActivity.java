@@ -39,7 +39,7 @@ public class ConfirmActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     EditText code = findViewById(R.id.editTextPersonName);
-                    User  u = (User)getIntent().getSerializableExtra("user");
+                    User u = (User) getIntent().getSerializableExtra("user");
                     UserFunctions.checkEmail(u, Integer.parseInt(code.getText().toString().trim()));
                     Intent register = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(register);
