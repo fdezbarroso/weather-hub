@@ -9,7 +9,6 @@
     tools:layout_editor_absoluteX="3dp"
     tools:layout_editor_absoluteY="66dp">
 
-
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"

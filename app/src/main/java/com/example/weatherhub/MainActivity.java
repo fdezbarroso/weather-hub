@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent log = new Intent(getApplicationContext(), MainMenuActivity.class);
                 startActivity(log);
                 } catch (UnregisteredUserException e) {
-                    Toast.makeText(getApplicationContext(), "Usuario no registradp", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
                 } catch (IncorrectPwdException e) {
                     Toast.makeText(getApplicationContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
                 }

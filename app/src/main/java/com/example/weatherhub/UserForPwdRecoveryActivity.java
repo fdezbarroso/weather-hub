@@ -3,9 +3,11 @@ package com.example.weatherhub;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,17 +43,24 @@ public class UserForPwdRecoveryActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    EditText userField = findViewById(R.id.editTextPersonName);
-                    String username = userField.getText().toString().trim();
-                    UserFunctions.confirmIdentityPwdRecover(username);
-                    ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
-                    Intent pwdRecover = new Intent(getApplicationContext(), RecoveryPwdActivity.class);
-                    pwdRecover.putExtra("user",username);
-                    startActivity(pwdRecover);
-                } catch (UnregisteredUserException e) {
-                    Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
-                }
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                             EditText userField = findViewById(R.id.editTextPersonName);
+                             String username = userField.getText().toString().trim();
+                             UserFunctions.confirmIdentityPwdRecover(username);
+                             Intent pwdRecover = new Intent(getApplicationContext(), RecoveryPwdActivity.class);
+                             pwdRecover.putExtra("user",username);
+                             startActivity(pwdRecover);
+                        } catch (UnregisteredUserException e) {
+                            Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
+                         }
+                    }
+                });
+                ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
             }
         });
     }
