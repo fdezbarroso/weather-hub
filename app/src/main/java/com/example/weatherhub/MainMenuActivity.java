@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,23 +20,32 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MainMenuActivity extends AppCompatActivity implements LocationListener{
-    TextView city, country;
+public class MainMenuActivity extends AppCompatActivity implements LocationListener {
+    TextView currentLocation, currentTemp, temp;
     private final static int REQUEST_CODE = 100;
     LocationManager locationManager;
     NotificationHandler notificationHandler;
     FrameLayout glFrame;
+    EditText address;
+    Button getTemp;
+
+    final WeatherDataService weatherDataService = new WeatherDataService(MainMenuActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +53,53 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         setContentView(R.layout.main_menu);
-        glFrame=(FrameLayout) findViewById(R.id.fragment_loading);
+        glFrame = (FrameLayout) findViewById(R.id.fragment_loading);
         glFrame.bringToFront();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        city = findViewById(R.id.textView1);
-        country = findViewById(R.id.textView14);
+        currentLocation = findViewById(R.id.tv_currentLoc);
+        currentTemp = findViewById(R.id.tv_currentTemp);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-          locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0F, this);
         else
             ActivityCompat.requestPermissions(MainMenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+
+        address = findViewById(R.id.et_address);
+        getTemp = findViewById(R.id.btn_getTemp);
+        temp = findViewById(R.id.tv_temp);
+        getTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Geocoder geocoder = new Geocoder(MainMenuActivity.this);
+                List<Address> addressList;
+                try {
+                    addressList = geocoder.getFromLocationName(address.getText().toString(), 1);
+                    if (addressList != null) {
+                        double latitude = addressList.get(0).getLatitude();
+                        double longitude = addressList.get(0).getLongitude();
+                        weatherDataService.getTempCurrent(latitude, longitude, new WeatherDataService.VolleyResponseListener() {
+                            @Override
+                            public void onError(String message) {
+                                Toast.makeText(MainMenuActivity.this, "Error occurred", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                JSONObject weatherResponse = response;
+                                try {
+                                    temp.setText(weatherResponse.getDouble("temperature") + "ºC");
+                                    // city.setText(addressList.get(0).getLocality());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         //Cierra la sesión del usuario
         Button logout = findViewById(R.id.button3);
@@ -76,15 +121,31 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         List<Address> addresses;
         try {
             addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            if (addresses.size() > 0) {
-                String c = addresses.get(0).getLocality();
-                if(c != null)
-                    city.setText(c + ", ");
-                else
-                    city.setText("");
-                country.setText(addresses.get(0).getCountryName());
+            if (addresses != null) {
+                Address currentLoc = addresses.get(0);
+                currentLocation.setText(currentLoc.getLocality() +  "\n" + currentLoc.getCountryName());
+                weatherDataService.getTempCurrent(currentLoc.getLatitude(), currentLoc.getLongitude(), new WeatherDataService.VolleyResponseListener() {
+                    @Override
+                    public void onError(String message) {
+                        Toast.makeText(MainMenuActivity.this, "Error occurred", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONObject weatherResponse = response;
+                        try {
+                            currentTemp.setText(weatherResponse.getDouble("temperature") + "ºC");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 glFrame.setVisibility(View.INVISIBLE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+            else{
+                currentLocation.setText("");
+                currentTemp.setText("");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,7 +158,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         notificationHandler = new NotificationHandler(this);
         notificationHandler.createChannels();
         Notification.Builder mBuilder = notificationHandler.createNotification("My notification",
-                city.getText().toString() + country.getText().toString(), false);
+                currentLocation.getText().toString(), false);
         notificationHandler.getManager().notify(1, mBuilder.build());
         Intent resultIntent = new Intent(this, MainMenuActivity.class);
         resultIntent.setAction(Intent.ACTION_MAIN);
@@ -109,5 +170,5 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
-        }
+    }
 }
