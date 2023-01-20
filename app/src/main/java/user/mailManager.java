@@ -1,6 +1,7 @@
 package user;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 
 import java.util.Properties;
@@ -37,26 +38,32 @@ public class mailManager {
         mProperties.put("mail.smtp.host", "smtp.gmail.com");
         mProperties.put("mail.smtp.auth", "true");
         mProperties.put("mail.smtp.starttls.enable", "true");
-        try {
-        mSession = Session.getDefaultInstance(mProperties, new Authenticator() {
+        AsyncTask.execute(new Runnable() {
             @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(email, password);
-            }
-        });
-        mEmail = new MimeMessage(mSession);
-        mEmail.setFrom(new InternetAddress(email));
-        mEmail.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
-        mEmail.setSubject(subject);
-        mEmail.setContent(body, "text/html; charset=utf-8");
-        Transport t = mSession.getTransport("smtp");
-        t.connect("smtp.gmail.com", 587, email, password);
-        t.sendMessage(mEmail, mEmail.getAllRecipients());
-        t.close();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }catch (Exception e) {
-            e.printStackTrace();
+            public void run() {
+                try {
+                     mSession = Session.getDefaultInstance(mProperties, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(email, password);
+                }
+                     });
+                mEmail = new MimeMessage(mSession);
+                mEmail.setFrom(new InternetAddress(email));
+                mEmail.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
+                mEmail.setSubject(subject);
+                mEmail.setContent(body, "text/html; charset=utf-8");
+                    Transport t = mSession.getTransport("smtp");
+                    t.connect("smtp.gmail.com", 587, email, password);
+                    t.sendMessage(mEmail, mEmail.getAllRecipients());
+                        t.close();
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
-}
+

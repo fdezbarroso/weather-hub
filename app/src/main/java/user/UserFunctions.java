@@ -1,5 +1,7 @@
 package user;
 
+import android.os.AsyncTask;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -75,6 +77,7 @@ public class UserFunctions implements Serializable {
         }
         User user = new User(username, toHexString(encodedPwd(pwd1)), email, null);
         confirmation = (int)(Math.random() * 100000);
+
         mailManager g = new mailManager(email, "Confirmación de cuenta",
                 "¡Enhorabuena! La cuenta con nombre de usuario " + username + " ha sido creada con exito,"
                         + " \n para validarla introduzca el siguiente código de verificación: \n" + confirmation);

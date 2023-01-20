@@ -43,34 +43,19 @@ public class UserForPwdRecoveryActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                             EditText userField = findViewById(R.id.editTextPersonName);
-                             String username = userField.getText().toString().trim();
-                             UserFunctions.confirmIdentityPwdRecover(username);
-                             Intent pwdRecover = new Intent(getApplicationContext(), RecoveryPwdActivity.class);
-                             pwdRecover.putExtra("user",username);
-                             startActivity(pwdRecover);
-                        } catch (UnregisteredUserException e) {
-                            Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
-                         }
-                    }
-                });
-                ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
                 try {
                     EditText userField = findViewById(R.id.editTextPersonName);
                     String username = userField.getText().toString().trim();
                     UserFunctions.confirmIdentityPwdRecover(username);
-                    ProgressDialog.show(context, "", "Enviando correo...", true);
                     Intent pwdRecover = new Intent(getApplicationContext(), RecoveryPwdActivity.class);
-                    pwdRecover.putExtra("user", username);
+                    pwdRecover.putExtra("user",username);
                     startActivity(pwdRecover);
                 } catch (UnregisteredUserException e) {
                     Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
+                    pdialog.cancel();
                 }
             }
         });

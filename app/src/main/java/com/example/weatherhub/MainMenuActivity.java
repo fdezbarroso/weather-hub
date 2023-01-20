@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,6 +19,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         setContentView(R.layout.main_menu);
         glFrame=(FrameLayout) findViewById(R.id.fragment_loading);
         glFrame.bringToFront();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         city = findViewById(R.id.textView1);
         country = findViewById(R.id.textView14);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -74,9 +77,14 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         try {
             addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses.size() > 0) {
-                city.setText(addresses.get(0).getLocality() + ", ");
+                String c = addresses.get(0).getLocality();
+                if(c != null)
+                    city.setText(c + ", ");
+                else
+                    city.setText("");
                 country.setText(addresses.get(0).getCountryName());
                 glFrame.setVisibility(View.INVISIBLE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         } catch (IOException e) {
             e.printStackTrace();
