@@ -61,6 +61,17 @@ public class UserForPwdRecoveryActivity extends AppCompatActivity {
                     }
                 });
                 ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
+                try {
+                    EditText userField = findViewById(R.id.editTextPersonName);
+                    String username = userField.getText().toString().trim();
+                    UserFunctions.confirmIdentityPwdRecover(username);
+                    ProgressDialog.show(context, "", "Enviando correo...", true);
+                    Intent pwdRecover = new Intent(getApplicationContext(), RecoveryPwdActivity.class);
+                    pwdRecover.putExtra("user", username);
+                    startActivity(pwdRecover);
+                } catch (UnregisteredUserException e) {
+                    Toast.makeText(getApplicationContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

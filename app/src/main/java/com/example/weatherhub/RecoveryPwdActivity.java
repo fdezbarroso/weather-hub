@@ -42,7 +42,7 @@ public class RecoveryPwdActivity extends AppCompatActivity {
                     EditText code = findViewById(R.id.editTextPersonName);
                     EditText pwd = findViewById(R.id.editTextPassword);
                     EditText confirmPwd = findViewById(R.id.editTextPassword2);
-                    String  u = getIntent().getStringExtra("user");
+                    String u = getIntent().getStringExtra("user");
                     UserFunctions.pwdRecovery(u, Integer.parseInt(code.getText().toString().trim()), pwd.getText().toString().trim(), confirmPwd.getText().toString().trim());
                     Intent register = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(register);

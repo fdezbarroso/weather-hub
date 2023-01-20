@@ -74,6 +74,25 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
                     ProgressDialog pdialog = ProgressDialog.show(context, "", "Enviando correo...", true);
+                try {
+                    EditText username = findViewById(R.id.editTextTextPersonName);
+                    EditText pwd = findViewById(R.id.editTextTextPassword);
+                    EditText pwd2 = findViewById(R.id.editTextTextPassword2);
+                    EditText email = findViewById(R.id.editTextTextEmailAddress);
+                    User user = UserFunctions.newUser(username.getText().toString().trim(), pwd.getText().toString().trim()
+                            , pwd2.getText().toString().trim()
+                            , email.getText().toString().trim());
+                    ProgressDialog.show(context, "", "Enviando correo...", true);
+                    Intent confirm = new Intent(getApplicationContext(), ConfirmActivity.class);
+                    confirm.putExtra("user", user);
+                    startActivity(confirm);
+                } catch (UserAlreadyExistException e) {
+                    Toast.makeText(getApplicationContext(), "Este usuario ya existe", Toast.LENGTH_SHORT).show();
+                } catch (MissingArgumentsException e) {
+                    Toast.makeText(getApplicationContext(), "Rellene todos los campos por favor", Toast.LENGTH_SHORT).show();
+                } catch (MissmatchPwdException e) {
+                    Toast.makeText(getApplicationContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
