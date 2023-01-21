@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,13 +38,15 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainMenuActivity extends AppCompatActivity implements LocationListener {
-    TextView currentLocation, currentTemp, temp;
-    private final static int REQUEST_CODE = 100;
-    LocationManager locationManager;
-    NotificationHandler notificationHandler;
+    TextView currentLocation, currentTemp, location;
     FrameLayout glFrame;
     EditText address;
     Button getTemp;
+    ListView temps;
+
+    private final static int REQUEST_CODE = 100;
+    LocationManager locationManager;
+    NotificationHandler notificationHandler;
 
     final WeatherDataService weatherDataService = new WeatherDataService(MainMenuActivity.this);
 
@@ -66,7 +69,9 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
 
         address = findViewById(R.id.et_address);
         getTemp = findViewById(R.id.btn_getTemp);
-        temp = findViewById(R.id.tv_temp);
+        location = findViewById(R.id.tv_loc);
+        temps = findViewById(R.id.lv_weatherList);
+
         getTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,12 +91,9 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                             @Override
                             public void onResponse(JSONObject response) {
                                 JSONObject weatherResponse = response;
-                                try {
-                                    temp.setText(weatherResponse.getDouble("temperature") + "ºC");
-                                    // city.setText(addressList.get(0).getLocality());
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                Address loc = addressList.get(0);
+                                location.setText(loc.getLocality() + "\n" + loc.getCountryName());
+                                // TODO: update list with weather report
                             }
                         });
                     }
