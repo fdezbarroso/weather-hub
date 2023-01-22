@@ -103,7 +103,12 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                             public void onResponse(JSONObject response) {
                                 JSONObject weatherResponse = response;
                                 Address loc = addressList.get(0);
-                                location.setText(loc.getLocality() + "\n" + loc.getCountryName());
+                                String city = loc.getLocality();
+                                String country = loc.getCountryName();
+                                if(city != null)
+                                    location.setText(loc.getLocality() + "\n" + loc.getCountryName());
+                                else
+                                    location.setText(loc.getCountryName());
                                 ArrayList<JSONObject> weatherObjectList = new ArrayList<>();
                                 for (int i = 0; i < 7; i++) {
                                     weatherObjectList.add(response);
