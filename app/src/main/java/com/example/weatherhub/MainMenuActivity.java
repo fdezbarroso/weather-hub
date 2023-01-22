@@ -100,7 +100,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                         weatherDataService.getTempForecast(latitude, longitude, new WeatherDataService.VolleyResponseListener() {
                             @Override
                             public void onError(String message) {
-                                Toast.makeText(MainMenuActivity.this, "Error occurred", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainMenuActivity.this, "Ha ocurrido un error", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override

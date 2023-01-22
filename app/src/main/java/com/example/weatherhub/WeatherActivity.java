@@ -2,9 +2,12 @@ package com.example.weatherhub;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ public class WeatherActivity extends AppCompatActivity {
     ListView lv_tempList;
 
     ArrayAdapter<String> arrayAdapter;
+    ImageView close;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,15 @@ public class WeatherActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_weather);
+
+        close = findViewById(R.id.imageView2);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainMenu = new Intent(getApplicationContext(), MainMenuActivity.class);
+                startActivity(mainMenu);
+            }
+        });
 
         weatherCode = (int) getIntent().getSerializableExtra("weathercode");
         city = (String) getIntent().getSerializableExtra("city");

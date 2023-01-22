@@ -124,9 +124,8 @@
     <ListView
         android:id="@+id/lv_tempList"
         android:layout_width="329dp"
-        android:layout_height="wrap_content"
+        android:layout_height="265dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="-20dp"
         android:gravity="center"
         android:textColor="#222222"
         android:textSize="10sp"
@@ -136,6 +135,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_tempMax"
         app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="43dp"
+        android:layout_height="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.069"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
