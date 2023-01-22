@@ -94,7 +94,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                 List<Address> addressList;
                 try {
                     addressList = geocoder.getFromLocationName(address.getText().toString(), 1);
-                    if (addressList != null) {
+                    if (addressList != null && !addressList.isEmpty()) {
                         double latitude = addressList.get(0).getLatitude();
                         double longitude = addressList.get(0).getLongitude();
                         weatherDataService.getTempForecast(latitude, longitude, new WeatherDataService.VolleyResponseListener() {
@@ -105,7 +105,6 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
 
                             @Override
                             public void onResponse(JSONObject response) {
-                                JSONObject weatherResponse = response;
                                 Address loc = addressList.get(0);
                                 city = loc.getLocality();
                                 country = loc.getCountryName();
@@ -124,6 +123,9 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                                 temps.setClickable(true);
                             }
                         });
+                    }
+                    else{
+                        Toast.makeText(MainMenuActivity.this, "La ubicación seleccionada no existe", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -230,7 +232,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                 String textToShare;
 
                 if (currentCity != null)
-                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + currentCity + " en " + currentCountry  + " source: open-meteo.com";
+                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + currentCity + " en " + currentCountry + " source: open-meteo.com";
                 else
                     textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en " + currentCountry + " source: open-meteo.com";
 
