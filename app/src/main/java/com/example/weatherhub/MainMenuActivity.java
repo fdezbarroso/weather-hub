@@ -186,9 +186,9 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
             public void onClick(View view) {
                 String textToShare;
                 if (city != null)
-                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + city + " en " + country;
+                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + city + " en " + country + " source: open-meteo.com";
                 else
-                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en " + country;
+                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en " + country + " source: open-meteo.com";
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
