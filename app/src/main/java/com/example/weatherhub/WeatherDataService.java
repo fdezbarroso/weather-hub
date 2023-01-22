@@ -51,7 +51,7 @@ public class WeatherDataService {
     }
 
     public void getTempForecast(double latitude, double longitude, VolleyResponseListener volleyResponseListener) {
-        String url = REQUEST_QUERY + "latitude=" + latitude + "&longitude=" + longitude + "&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant&timezone=auto";
+        String url = REQUEST_QUERY + "latitude=" + latitude + "&longitude=" + longitude + "&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
