@@ -22,10 +22,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,6 +45,8 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
     EditText address;
     Button getTemp;
     ListView temps;
+    String country;
+    String city;
 
     private final static int REQUEST_CODE = 100;
     LocationManager locationManager;
@@ -62,8 +66,14 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         currentLocation = findViewById(R.id.tv_currentLoc);
         currentTemp = findViewById(R.id.tv_currentTemp);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0F, this);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0F, this);
+            else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0F, this);
+            else
+                Toast.makeText(MainMenuActivity.this, "No se puede acceder a la ubicación", Toast.LENGTH_SHORT).show();
+        }
         else
             ActivityCompat.requestPermissions(MainMenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
 
@@ -125,7 +135,12 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
             addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null) {
                 Address currentLoc = addresses.get(0);
-                currentLocation.setText(currentLoc.getLocality() +  "\n" + currentLoc.getCountryName());
+                city = currentLoc.getLocality();
+                country = currentLoc.getCountryName();
+                if(city != null)
+                    currentLocation.setText(city +  "\n" + country);
+                else
+                    currentLocation.setText(country);
                 weatherDataService.getTempCurrent(currentLoc.getLatitude(), currentLoc.getLongitude(), new WeatherDataService.VolleyResponseListener() {
                     @Override
                     public void onError(String message) {
@@ -152,25 +167,61 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        ImageView share = findViewById(R.id.imageView);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String textToShare;
+                if(city != null)
+                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + city + " en " + country;
+                else
+                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en " + country;
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        notificationHandler = new NotificationHandler(this);
-        notificationHandler.createChannels();
-        Notification.Builder mBuilder = notificationHandler.createNotification("My notification",
-                currentLocation.getText().toString(), false);
-        notificationHandler.getManager().notify(1, mBuilder.build());
-        Intent resultIntent = new Intent(this, MainMenuActivity.class);
-        resultIntent.setAction(Intent.ACTION_MAIN);
-        resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        String temperature = currentTemp.getText().toString();
+        if(!temperature.equals("")) {
+            notificationHandler = new NotificationHandler(this);
+            notificationHandler.createChannels();
+            Notification.Builder mBuilder;
+            mBuilder = notificationHandler.createNotification(temperature,
+                    city + ", " + country, false);
+            notificationHandler.getManager().notify(1, mBuilder.build());
+            Intent resultIntent = new Intent(this, MainMenuActivity.class);
+            resultIntent.setAction(Intent.ACTION_MAIN);
+            resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                resultIntent, FLAG_IMMUTABLE);
-        mBuilder.setContentIntent(pendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1, mBuilder.build());
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                    resultIntent, FLAG_IMMUTABLE);
+            mBuilder.setContentIntent(pendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.notify(1, mBuilder.build());
+        }
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
     }
 }

@@ -8,7 +8,7 @@
         android:id="@+id/iv_weather"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="" />
+         />
 
     <TextView
         android:id="@+id/tv_temp"
