@@ -32,8 +32,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.weatherhub.databinding.ActivityMainBinding;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -105,7 +103,6 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                                 JSONObject weatherResponse = response;
                                 Address loc = addressList.get(0);
                                 location.setText(loc.getLocality() + "\n" + loc.getCountryName());
-                                // TODO: update list with weather report
                                 ArrayList<JSONObject> weatherObjectList = new ArrayList<>();
                                 for (int i = 0; i < 7; i++) {
                                     weatherObjectList.add(response);
