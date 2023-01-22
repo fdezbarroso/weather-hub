@@ -49,4 +49,42 @@ public class WeatherDataService {
 
         RequestSingleton.getInstance(context).addToRequestQueue(request);
     }
+
+    public void getTempForecast(double latitude, double longitude, VolleyResponseListener volleyResponseListener) {
+        String url = REQUEST_QUERY + "latitude=" + latitude + "&longitude=" + longitude + "&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant&timezone=auto";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                weatherInfo = response;
+                volleyResponseListener.onResponse(weatherInfo);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                volleyResponseListener.onError("Error occurred");
+            }
+        });
+
+        RequestSingleton.getInstance(context).addToRequestQueue(request);
+    }
+
+    public void getTempHourly(double latitude, double longitude, VolleyResponseListener volleyResponseListener) {
+        String url = REQUEST_QUERY + "latitude=" + latitude + "&longitude=" + longitude + "&hourly=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant&timezone=auto";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                weatherInfo = response;
+                volleyResponseListener.onResponse(weatherInfo);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                volleyResponseListener.onError("Error occurred");
+            }
+        });
+
+        RequestSingleton.getInstance(context).addToRequestQueue(request);
+    }
 }

@@ -32,10 +32,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.weatherhub.databinding.ActivityMainBinding;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,8 +76,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0F, this);
             else
                 Toast.makeText(MainMenuActivity.this, "No se puede acceder a la ubicación", Toast.LENGTH_SHORT).show();
-        }
-        else
+        } else
             ActivityCompat.requestPermissions(MainMenuActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
 
         address = findViewById(R.id.et_address);
@@ -92,7 +94,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                     if (addressList != null) {
                         double latitude = addressList.get(0).getLatitude();
                         double longitude = addressList.get(0).getLongitude();
-                        weatherDataService.getTempCurrent(latitude, longitude, new WeatherDataService.VolleyResponseListener() {
+                        weatherDataService.getTempForecast(latitude, longitude, new WeatherDataService.VolleyResponseListener() {
                             @Override
                             public void onError(String message) {
                                 Toast.makeText(MainMenuActivity.this, "Error occurred", Toast.LENGTH_SHORT).show();
@@ -104,6 +106,15 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                                 Address loc = addressList.get(0);
                                 location.setText(loc.getLocality() + "\n" + loc.getCountryName());
                                 // TODO: update list with weather report
+                                ArrayList<JSONObject> weatherObjectList = new ArrayList<>();
+                                for (int i = 0; i < 7; i++) {
+                                    weatherObjectList.add(response);
+                                }
+
+                                ListAdapter listAdapter = new ListAdapter(MainMenuActivity.this, weatherObjectList);
+                                temps.setAdapter(listAdapter);
+
+                                temps.setClickable(true);
                             }
                         });
                     }
@@ -137,8 +148,8 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                 Address currentLoc = addresses.get(0);
                 city = currentLoc.getLocality();
                 country = currentLoc.getCountryName();
-                if(city != null)
-                    currentLocation.setText(city +  "\n" + country);
+                if (city != null)
+                    currentLocation.setText(city + "\n" + country);
                 else
                     currentLocation.setText(country);
                 weatherDataService.getTempCurrent(currentLoc.getLatitude(), currentLoc.getLongitude(), new WeatherDataService.VolleyResponseListener() {
@@ -159,8 +170,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                 });
                 glFrame.setVisibility(View.INVISIBLE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            }
-            else{
+            } else {
                 currentLocation.setText("");
                 currentTemp.setText("");
             }
@@ -173,7 +183,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onClick(View view) {
                 String textToShare;
-                if(city != null)
+                if (city != null)
                     textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + city + " en " + country;
                 else
                     textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en " + country;
@@ -190,7 +200,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
     protected void onPause() {
         super.onPause();
         String temperature = currentTemp.getText().toString();
-        if(!temperature.equals("")) {
+        if (!temperature.equals("")) {
             notificationHandler = new NotificationHandler(this);
             notificationHandler.createChannels();
             Notification.Builder mBuilder;
