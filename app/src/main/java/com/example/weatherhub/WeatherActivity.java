@@ -74,10 +74,10 @@ public class WeatherActivity extends AppCompatActivity {
             tv_loc.setText(country);
 
         tv_date.setText(date);
-        tv_maxWindSpeed.setText("Max Wind Speed\n" + maxWindSpeed);
-        tv_windDirection.setText("Wind Direction\n" + windDirection);
-        tv_tempMin.setText("T. min\n" + minTemp);
-        tv_tempMax.setText("T. max\n" + maxTemp);
+        tv_maxWindSpeed.setText("Max Wind Speed\n" + maxWindSpeed + "Km/h");
+        tv_windDirection.setText("Wind Direction\n" + windDirection + "º");
+        tv_tempMin.setText("T. min\n" + minTemp + "ºC");
+        tv_tempMax.setText("T. max\n" + maxTemp + "ºC");
 
         ArrayList<String> hourlyTempsText = new ArrayList<>();
         for (int i = 0; i < hourlyTemps.size(); i++) {
