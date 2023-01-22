@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +46,7 @@ public class ListAdapter extends ArrayAdapter<JSONObject> {
             JSONObject dailyWeather = weatherObjects.get(position).getJSONObject("daily");
 
             int weatherCode = dailyWeather.getJSONArray("weathercode").getInt(position);
+
 
             if (weatherCode == 0) {
                 weatherIcon.setImageResource(R.drawable.sun);

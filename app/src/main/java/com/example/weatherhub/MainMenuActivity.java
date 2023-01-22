@@ -28,11 +28,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,14 +47,17 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
     EditText address;
     Button getTemp;
     ListView temps;
-    String country;
+    String currentCountry;
+    String currentCity;
     String city;
+    String country;
 
     private final static int REQUEST_CODE = 100;
     LocationManager locationManager;
     NotificationHandler notificationHandler;
 
     final WeatherDataService weatherDataService = new WeatherDataService(MainMenuActivity.this);
+    ArrayList<JSONObject> weatherObjectList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         getTemp = findViewById(R.id.btn_getTemp);
         location = findViewById(R.id.tv_loc);
         temps = findViewById(R.id.lv_weatherList);
+        temps.setClickable(false);
 
         getTemp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,20 +107,20 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                             public void onResponse(JSONObject response) {
                                 JSONObject weatherResponse = response;
                                 Address loc = addressList.get(0);
-                                String city = loc.getLocality();
-                                String country = loc.getCountryName();
-                                if(city != null)
+                                city = loc.getLocality();
+                                country = loc.getCountryName();
+                                if (city != null)
                                     location.setText(loc.getLocality() + "\n" + loc.getCountryName());
                                 else
                                     location.setText(loc.getCountryName());
-                                ArrayList<JSONObject> weatherObjectList = new ArrayList<>();
+
+                                weatherObjectList = new ArrayList<>();
                                 for (int i = 0; i < 7; i++) {
                                     weatherObjectList.add(response);
                                 }
 
                                 ListAdapter listAdapter = new ListAdapter(MainMenuActivity.this, weatherObjectList);
                                 temps.setAdapter(listAdapter);
-
                                 temps.setClickable(true);
                             }
                         });
@@ -130,7 +134,38 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
         temps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                JSONObject weatherData = weatherObjectList.get(i);
+                Intent intent = new Intent(MainMenuActivity.this, WeatherActivity.class);
 
+                try {
+                    intent.putExtra("weathercode", (int) weatherData.getJSONObject("daily").getJSONArray("weathercode").get(i));
+
+                    if (city != null)
+                        intent.putExtra("city", city);
+                    else
+                        intent.putExtra("city", "empty");
+                    intent.putExtra("country", country);
+
+                    intent.putExtra("date", weatherData.getJSONObject("daily").getJSONArray("time").getString(i));
+
+                    intent.putExtra("maxWindSpeed", (Double) weatherData.getJSONObject("daily").getJSONArray("windspeed_10m_max").get(i));
+                    intent.putExtra("windDirection", (int) weatherData.getJSONObject("daily").getJSONArray("winddirection_10m_dominant").get(i));
+
+                    intent.putExtra("maxTemp", (Double) weatherData.getJSONObject("daily").getJSONArray("temperature_2m_max").get(i));
+                    intent.putExtra("minTemp", (Double) weatherData.getJSONObject("daily").getJSONArray("temperature_2m_min").get(i));
+
+                    ArrayList<Double> hourlyTemps = new ArrayList<>();
+                    JSONArray jsonTemps = weatherData.getJSONObject("hourly").getJSONArray("temperature_2m");
+                    for (int j = i * 24; j < (i * 24) + 24; j++) {
+                        hourlyTemps.add(jsonTemps.getDouble(j));
+                    }
+                    intent.putExtra("hourlyTemps", hourlyTemps);
+
+                    startActivity(intent);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -156,12 +191,12 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
             addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null) {
                 Address currentLoc = addresses.get(0);
-                city = currentLoc.getLocality();
-                country = currentLoc.getCountryName();
-                if (city != null)
-                    currentLocation.setText(city + "\n" + country);
+                currentCity = currentLoc.getLocality();
+                currentCountry = currentLoc.getCountryName();
+                if (currentCity != null)
+                    currentLocation.setText(currentCity + "\n" + currentCountry);
                 else
-                    currentLocation.setText(country);
+                    currentLocation.setText(currentCountry);
                 weatherDataService.getTempCurrent(currentLoc.getLatitude(), currentLoc.getLongitude(), new WeatherDataService.VolleyResponseListener() {
                     @Override
                     public void onError(String message) {
@@ -193,10 +228,10 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onClick(View view) {
                 String textToShare;
-                if (city != null)
-                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + city + " en " + country;
+                if (currentCity != null)
+                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en la localidad de " + currentCity + " en " + currentCountry;
                 else
-                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en " + country;
+                    textToShare = "La temperatura es de " + currentTemp.getText().toString() + " en " + currentCountry;
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
@@ -215,7 +250,7 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
             notificationHandler.createChannels();
             Notification.Builder mBuilder;
             mBuilder = notificationHandler.createNotification(temperature,
-                    city + ", " + country, false);
+                    currentCity + ", " + currentCountry, false);
             notificationHandler.getManager().notify(1, mBuilder.build());
             Intent resultIntent = new Intent(this, MainMenuActivity.class);
             resultIntent.setAction(Intent.ACTION_MAIN);
@@ -228,20 +263,5 @@ public class MainMenuActivity extends AppCompatActivity implements LocationListe
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             mNotificationManager.notify(1, mBuilder.build());
         }
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
     }
 }
